@@ -2,7 +2,7 @@
 
 require_relative "unused_cassettes/version"
 
-module Vcr
+module VCR
   module UnusedCassettes
     class Error < StandardError; end
     # Your code goes here...

@@ -4,7 +4,7 @@ require_relative "lib/vcr/unused_cassettes/version"
 
 Gem::Specification.new do |spec|
   spec.name = "vcr-unused_cassettes"
-  spec.version = Vcr::UnusedCassettes::VERSION
+  spec.version = VCR::UnusedCassettes::VERSION
   spec.authors = ["Josch Bockler"]
   spec.email = ["9265647+jbockler@users.noreply.github.com "]
 
