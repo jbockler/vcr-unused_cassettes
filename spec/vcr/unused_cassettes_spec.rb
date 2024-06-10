@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe Vcr::UnusedCassettes do
+RSpec.describe VCR::UnusedCassettes do
   it "has a version number" do
-    expect(Vcr::UnusedCassettes::VERSION).not_to be nil
+    expect(VCR::UnusedCassettes::VERSION).not_to be nil
   end
 
   it "does something useful" do
