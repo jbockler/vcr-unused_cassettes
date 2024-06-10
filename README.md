@@ -1,22 +1,34 @@
 # Vcr::UnusedCassettes
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/vcr/unused_cassettes`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+This gem provides a way to detect unused [VCR](https://github.com/vcr/vcr) cassettes. It is intended to be used in a test suite to ensure that all VCR cassettes are being used. You could run this in your CI pipeline to ensure that no cassettes are being left behind.
 
 ## Installation
 
 Install the gem and add to the application's Gemfile by executing:
 
-    $ bundle add vcr-unused_cassettes
+    $ bundle add vcr-unused_cassettes --group "development, test"
 
 If bundler is not being used to manage dependencies, install the gem by executing:
 
     $ gem install vcr-unused_cassettes
 
+Additionally you have to load the rake tasks in your application. Add the following line to your `Rakefile`:
+
+```ruby
+require "vcr-unused_cassettes"
+
+spec = Gem::Specification.find_by_name
+rakefile = "#{spec.gem_dir}/lib/vcr/unused_cassettes/Rakefile"
+load rakefile
+```
+
+If you are using Rails you don't have to do that. This gem ships with a Railtie that automatically loads the rake tasks.
+
 ## Usage
 
-TODO: Write usage instructions here
+It is enough to run the following command to detect unused cassettes:
+
+    $ rails vcr:unused_cassettes
 
 ## Development
 
@@ -26,7 +38,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/vcr-unused_cassettes. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/vcr-unused_cassettes/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/jbockler/vcr-unused_cassettes. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/jbockler/vcr-unused_cassettes/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -34,4 +46,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Vcr::UnusedCassettes project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/vcr-unused_cassettes/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Vcr::UnusedCassettes project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/jbockler/vcr-unused_cassettes/blob/master/CODE_OF_CONDUCT.md).
