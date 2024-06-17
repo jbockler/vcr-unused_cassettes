@@ -2,6 +2,8 @@
 
 This gem provides a way to detect unused [VCR](https://github.com/vcr/vcr) cassettes. It is intended to be used in a test suite to ensure that all VCR cassettes are being used. You could run this in your CI pipeline to ensure that no cassettes are being left behind.
 
+Be aware that the recognition of the cassettes that are in use is really basic. If you do some more complex stuff this Gem might not be able to detect all cassettes that are in use.
+
 ## Installation
 
 Install the gem and add to the application's Gemfile by executing:

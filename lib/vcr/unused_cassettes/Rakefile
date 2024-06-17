@@ -1,4 +1,4 @@
-require 'vcr/unused_cassettes'
+require "vcr/unused_cassettes"
 
 path = File.expand_path(__dir__)
 Dir.glob("#{path}/tasks/**/*.rake").each { |f| import f }

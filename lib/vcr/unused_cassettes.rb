@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 require_relative "unused_cassettes/version"
+require_relative "unused_cassettes/runner"
+require_relative "unused_cassettes/code_fragments/base_fragment"
+require_relative "unused_cassettes/code_fragments/use_cassette_fragment"
 
 module VCR
   module UnusedCassettes

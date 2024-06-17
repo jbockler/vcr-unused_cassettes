@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     vcr-unused_cassettes (0.1.0)
+      vcr
 
 GEM
   remote: https://rubygems.org/
@@ -63,6 +64,7 @@ GEM
       lint_roller (~> 1.1)
       rubocop-performance (~> 1.20.2)
     unicode-display_width (2.5.0)
+    vcr (6.2.0)
 
 PLATFORMS
   arm64-darwin-21
