@@ -5,8 +5,6 @@ module VCR::UnusedCassettes
     class BaseFragment
       attr_reader :content, :file, :line_number
 
-      delegate :include?, to: :content
-
       def initialize(file, line_number, content)
         @file = file
         @line_number = line_number

@@ -20,9 +20,7 @@ module VCR::UnusedCassettes
         next unless File.exist?(test_folder)
         `grep -r -n '#{CodeFragments::UseCassetteFragment::SNIPPET}' #{test_folder}/`.split("\n").each do |line|
           used_cassette_fragment = CodeFragments::UseCassetteFragment.new(*line.split(":", 3))
-          used_cassette_fragment.strip_comments!
-          # was the snippet only in the comment?
-          next unless used_cassette_fragment.snippet_present?
+          next unless used_cassette_fragment.snipped_called?
 
           cassette_name = used_cassette_fragment.find_cassette_name
           if cassette_name

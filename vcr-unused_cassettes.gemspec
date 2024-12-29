@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "Adds a rake task to find unused VCR cassettes in your project. To check for them in your CI or if you just want to cleanup."
   spec.homepage = "https://github.com/jbockler/vcr-unused_cassettes"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.required_ruby_version = ">= 3.3.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
