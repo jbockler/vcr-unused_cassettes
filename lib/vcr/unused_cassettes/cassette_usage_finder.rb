@@ -16,7 +16,7 @@ module VCR::UnusedCassettes
 
     def find_cassette_usages
       parse_result = Prism.parse_file(filename)
-      return [[],[]] unless parse_result
+      return [[], []] unless parse_result
 
       find_cassette_usages_in(parse_result.value)
 
@@ -29,7 +29,7 @@ module VCR::UnusedCassettes
       if node_contains_call?(node)
         found_name = find_cassette_name(node)
         unless found_name.nil?
-          used_cassettes << found_name if found_name =~ /[a-zA-Z0-9]/
+          used_cassettes << found_name if /[a-zA-Z0-9]/.match?(found_name)
         end
       end
 

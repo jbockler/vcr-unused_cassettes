@@ -50,8 +50,8 @@ module VCR::UnusedCassettes
 
     def downcase_cassette_names?
       !!VCR.configuration
-           .default_cassette_options
-           .dig(:persister_options, :downcase_cassette_names)
+        .default_cassette_options
+        .dig(:persister_options, :downcase_cassette_names)
     end
 
     def persister
@@ -60,6 +60,5 @@ module VCR::UnusedCassettes
         VCR.configuration.cassette_persisters[default_persister]
       end
     end
-
   end
 end
