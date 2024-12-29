@@ -1,7 +1,7 @@
 namespace :vcr do
   desc "List unused cassettes"
   task unused_cassettes: :environment do |_task|
-    unused_cassettes, warnings = VCR::UnusedCassettes::Runner.new.find_unused_cassettes
+    unused_cassettes, warnings = VCR::UnusedCassettes::AstRunner.new.find_unused_cassettes
 
     warnings.each { |warning| warn warning }
 

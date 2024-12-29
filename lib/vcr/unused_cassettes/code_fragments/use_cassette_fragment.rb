@@ -13,6 +13,7 @@ module VCR::UnusedCassettes
         #   "my_cassette",
         #   persist_with: :some_option
         # ) do
+        # fixed by using Prism (AstRunner)
         possible_name = content[(content.index(SNIPPET) + SNIPPET.size)..].strip
         possible_name = possible_name[1..] if possible_name.starts_with?("(")
         possible_name.strip!
