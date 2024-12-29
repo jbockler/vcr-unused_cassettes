@@ -10,25 +10,22 @@ module VCR::UnusedCassettes
       unused_cassettes = existing_cassettes.select do |existing_cassette_name|
         !cassette_uses.any? { |used_cassette_name| File.fnmatch?(used_cassette_name, existing_cassette_name) }
       end
+
       [unused_cassettes, warnings]
     end
 
     def used_cassettes_names_patterns
+      # todo workaround for warnings
       used_cassettes = []
       warnings = []
-      ["test", "spec"].each do |test_folder|
-        next unless File.exist?(test_folder)
-        `grep -r -n '#{CodeFragments::UseCassetteFragment::SNIPPET}' #{test_folder}/`.split("\n").each do |line|
-          used_cassette_fragment = CodeFragments::UseCassetteFragment.new(*line.split(":", 3))
-          next unless used_cassette_fragment.snipped_called?
 
-          cassette_name = used_cassette_fragment.find_cassette_name
-          if cassette_name
-            used_cassettes << cassette_name
-          else
-            warnings << "Could not determine cassette name in #{used_cassette_fragment.file}:#{used_cassette_fragment.line_number}"
-          end
-        end
+      file_list = `grep -r -l "VCR.use_cassette" test/`.split("\n")
+      return [[], []] if file_list.empty? || $? != 0
+
+      file_list.each do |file|
+        found_usages, found_warnings = CassetteUsageFinder.new(file).find_cassette_usages
+        used_cassettes += found_usages
+        warnings += found_warnings
       end
 
       [used_cassettes, warnings]
@@ -53,8 +50,8 @@ module VCR::UnusedCassettes
 
     def downcase_cassette_names?
       !!VCR.configuration
-        .default_cassette_options
-        .dig(:persister_options, :downcase_cassette_names)
+           .default_cassette_options
+           .dig(:persister_options, :downcase_cassette_names)
     end
 
     def persister
@@ -63,5 +60,6 @@ module VCR::UnusedCassettes
         VCR.configuration.cassette_persisters[default_persister]
       end
     end
+
   end
 end

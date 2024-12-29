@@ -4,20 +4,23 @@ require "prism"
 
 module VCR::UnusedCassettes
   class CassetteUsageFinder
-    attr_accessor :filename, :used_cassettes
+    attr_accessor :filename, :used_cassettes, :warnings
+
+    CassetteNameError = Class.new(StandardError)
 
     def initialize(filename)
       self.filename = filename
       self.used_cassettes = []
+      self.warnings = []
     end
 
     def find_cassette_usages
       parse_result = Prism.parse_file(filename)
-      return [] unless parse_result
+      return [[],[]] unless parse_result
 
       find_cassette_usages_in(parse_result.value)
 
-      used_cassettes
+      [used_cassettes, warnings]
     end
 
     def find_cassette_usages_in(node)
@@ -59,16 +62,27 @@ module VCR::UnusedCassettes
           when Prism::EmbeddedStatementsNode
             "*"
           else
-            raise "dont know how to handle #{part_node.class}"
+            raise CassetteNameError, "dont know how to handle interpolation part #{part_node.class}"
           end
         end.join
       when Prism::StringNode
         # just a string literal
         cassette_name = cassette_argument.unescaped
       else
-        raise "dont know how to handle #{cassette_argument.class}"
+        raise CassetteNameError, "dont know how to handle argument #{cassette_argument.class}"
       end
       cassette_name
+    rescue CassetteNameError => error
+      warnings << build_warning(node, error)
+      nil
+    end
+
+    def build_warning(node, error)
+      Warning.new.tap do |warning|
+        warning.message = "Could not determine cassette name for #{filename}:#{node.line}"
+        warning.details = error.message
+        warning.backtrace = error.backtrace
+      end
     end
   end
 end

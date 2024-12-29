@@ -31,5 +31,13 @@ RSpec.describe VCR::UnusedCassettes::CodeFragments::UseCassetteFragment do
         expect(subject.snipped_called?).to eq(false)
       end
     end
+
+    context "temp" do
+      let(:content) { 'VCR.use_cassette("#{foo}_bar") do' }
+
+      it "returns true" do
+        expect(subject.snipped_called?).to eq(false)
+      end
+    end
   end
 end
