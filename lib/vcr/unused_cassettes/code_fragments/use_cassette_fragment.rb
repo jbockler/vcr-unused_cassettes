@@ -8,6 +8,11 @@ module VCR::UnusedCassettes
       attr_accessor :calling_node
 
       def find_cassette_name
+        # todo does not work for multiline calls e.g.:
+        # VCR.use_cassette(
+        #   "my_cassette",
+        #   persist_with: :some_option
+        # ) do
         possible_name = content[(content.index(SNIPPET) + SNIPPET.size)..].strip
         possible_name = possible_name[1..] if possible_name.starts_with?("(")
         possible_name.strip!
