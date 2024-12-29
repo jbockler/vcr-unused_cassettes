@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative "unused_cassettes/version"
-require_relative "unused_cassettes/runner"
-require_relative "unused_cassettes/cassette_usage_finder"
-require_relative "unused_cassettes/warning"
+require "zeitwerk"
+
+loader = Zeitwerk::Loader.for_gem_extension(VCR)
+loader.setup
 
 module VCR
   module UnusedCassettes

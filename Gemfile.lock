@@ -3,6 +3,7 @@ PATH
   specs:
     vcr-unused_cassettes (0.1.0)
       vcr
+      zeitwerk
 
 GEM
   remote: https://rubygems.org/
@@ -65,6 +66,7 @@ GEM
       rubocop-performance (~> 1.20.2)
     unicode-display_width (2.5.0)
     vcr (6.2.0)
+    zeitwerk (2.7.1)
 
 PLATFORMS
   arm64-darwin-21
