@@ -6,7 +6,7 @@ module VCR::UnusedCassettes
       SNIPPET = "VCR.use_cassette"
 
       def find_cassette_name
-        possible_name = content[(content.index(SNIPPET) + SNIPPET.size)..]
+        possible_name = content[(content.index(SNIPPET) + SNIPPET.size)..].strip
         possible_name = possible_name[1..] if possible_name.starts_with?("(")
         possible_name.strip!
 
@@ -14,7 +14,7 @@ module VCR::UnusedCassettes
         possible_name.gsub!(/\#\{[^\}]*\}/, "*")
 
         start_char = possible_name[0]
-        return if %W[" '].include?(start_char) # currently only plain strings are supported
+        return unless %W[" '].include?(start_char) # currently only plain strings are supported
 
         end_of_string = possible_name.index(/[^\\]#{start_char}/, 1)
         name = possible_name[1..end_of_string]

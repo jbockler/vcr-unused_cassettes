@@ -14,6 +14,6 @@ namespace :vcr do
     unused_cassettes.each { |cassette| puts cassette }
     puts "\n"
 
-    abort("There are unused cassettes")
+    abort("There are #{unused_cassettes.size} unused cassettes")
   end
 end

@@ -7,10 +7,10 @@ module VCR::UnusedCassettes
 
       delegate :include?, to: :content
 
-      def initialize(content, file, line_number)
-        @content = content
+      def initialize(file, line_number, content)
         @file = file
         @line_number = line_number
+        @content = content
       end
 
       def strip_comments!
