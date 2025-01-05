@@ -41,6 +41,13 @@ This gem provides 2 tasks:
 ### Remove unused cassettes
     $ rails vcr:unused_cassettes:remove
 
+## Roadmap
+- add automated tests
+- track constants that are used in the `VCR.use_cassette` calls
+- find usages of cassettes when test name is used
+- Add support for multiple cassette persisters in the same project
+- Add support for rspec and cucumber
+- create multiple run configurations to use e.g. minitest and cucumber in the same repo
 
 ## Development
 
