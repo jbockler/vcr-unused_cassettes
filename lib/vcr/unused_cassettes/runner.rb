@@ -15,7 +15,6 @@ module VCR::UnusedCassettes
     end
 
     def used_cassettes_names_patterns
-      # todo workaround for warnings
       used_cassettes = []
       warnings = []
 
