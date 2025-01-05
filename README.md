@@ -2,7 +2,12 @@
 
 This gem provides a way to detect unused [VCR](https://github.com/vcr/vcr) cassettes. It is intended to be used in a test suite to ensure that all VCR cassettes are being used. You could run this in your CI pipeline to ensure that no cassettes are being left behind.
 
-Be aware that the recognition of the cassettes that are in use is really basic. If you do some more complex stuff this Gem might not be able to detect all cassettes that are in use.
+
+## Pre-requisites
+
+This gem currently only is supposed to work with minitest, but rspec and cucumber support is planned.
+
+The interpretation of which cassettes are being used is pretty simple in the moment. Only string literals and some basic use of local variables is interpreted at the moment. If you do some more magic with the `VCR.use_cassette` calls, it is possible that you get false positives. 
 
 ## Installation
 
@@ -28,9 +33,14 @@ If you are using Rails you don't have to do that. This gem ships with a Railtie 
 
 ## Usage
 
-It is enough to run the following command to detect unused cassettes:
+This gem provides 2 tasks:
 
-    $ rails vcr:unused_cassettes
+### Check for unused cassettes
+    $ rails vcr:unused_cassettes:check
+
+### Remove unused cassettes
+    $ rails vcr:unused_cassettes:remove
+
 
 ## Development
 
