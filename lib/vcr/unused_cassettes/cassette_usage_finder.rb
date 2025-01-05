@@ -6,8 +6,6 @@ module VCR::UnusedCassettes
   class CassetteUsageFinder
     attr_accessor :filename, :used_cassettes, :warnings, :call_context
 
-    CassetteNameError = Class.new(StandardError)
-
     def initialize(filename)
       self.filename = filename
       self.used_cassettes = []
@@ -55,42 +53,8 @@ module VCR::UnusedCassettes
     def find_cassette_name(node)
       # cassette is the first argument of the use_cassette call
       cassette_argument = node.arguments.arguments.first
-      case cassette_argument
-      when Prism::InterpolatedStringNode
-        cassette_name = cassette_argument.parts.map do |part_node|
-          case part_node
-          when Prism::StringNode
-            part_node.unescaped
-          when Prism::EmbeddedStatementsNode
-            if part_node.statements.body.size != 1
-              "*"
-            else
-              statement = part_node.statements.body.first
-              if statement.type == :local_variable_read_node
-                call_context.resolve_variable_call(statement.name)&.to_s
-              else
-                "*"
-              end
-            end
-          else
-            raise CassetteNameError, "dont know how to handle interpolation part #{part_node.class}"
-          end
-        end.join
-      when Prism::StringNode
-        # just a string literal
-        cassette_name = cassette_argument.unescaped
-      when Prism::CallNode
-        unless cassette_argument.variable_call?
-          raise CassetteNameError, "expected variable call, got #{cassette_argument.type}"
-        end
-        variable_name = cassette_argument.name
-        cassette_name = call_context.resolve_variable_call(variable_name)&.to_s
-        raise CassetteNameError, "could not resolve variable #{variable_name}" if cassette_name.nil?
-      else
-        raise CassetteNameError, "dont know how to handle argument #{cassette_argument.class}"
-      end
-      cassette_name
-    rescue CassetteNameError => error
+      call_context.extract_value(cassette_argument, string_interpolation_error: :wildcard)
+    rescue CallContext::ValueUnresolveable => error
       warnings << build_warning(node, error)
       nil
     end
