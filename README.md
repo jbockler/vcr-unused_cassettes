@@ -46,9 +46,7 @@ This gem provides 2 tasks:
 ## Roadmap
 Open for contributions. Some ideas what could be done in the future:
 - automate manual tests into rspec tests
-- track constants that are used in the `VCR.use_cassette` calls
 - find usages of cassettes when test name is used
-- Add support for multiple cassette persisters in the same project
 - Add support for rspec and cucumber
 - create multiple run configurations to use e.g. minitest and cucumber in the same repo
 - fancy spinner with progress indicator (configurable for ci environments)

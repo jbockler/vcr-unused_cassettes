@@ -29,8 +29,12 @@ module VCR::UnusedCassettes
 
       if node_contains_call?(node)
         found_name = find_cassette_name(node)
-        unless found_name.nil?
-          used_cassettes << found_name if /[a-zA-Z0-9]/.match?(found_name)
+        if !found_name.nil? && /[a-zA-Z0-9]/.match?(found_name)
+          cassette_use = {pattern: found_name}
+          cassette_options = extract_options(node)
+          cassette_use[:persister] = cassette_options[:persist_with] if cassette_options&.has_key?(:persist_with)
+          cassette_use[:serializer] = cassette_options[:serialize_with] if cassette_options&.has_key?(:serialize_with)
+          used_cassettes << cassette_use
         end
       end
 
@@ -39,6 +43,17 @@ module VCR::UnusedCassettes
       node.child_nodes.each do |child_node|
         find_cassette_usages_in(child_node)
       end
+    end
+
+    def extract_options(node)
+      return nil if node.arguments.arguments.size <= 1
+      node.arguments.arguments.each do |argument_node|
+        next unless argument_node.is_a?(Prism::KeywordHashNode)
+        return call_context.extract_value(argument_node, string_interpolation_error: :raise)
+      end
+      nil
+    rescue CallContext::ValueUnresolveable => error
+      warnings << build_warning(node, error)
     end
 
     def node_contains_call?(node)

@@ -35,15 +35,25 @@ module VCR::UnusedCassettes
       case node.type
       when :nil_node
         nil
-      when :string_node, :symbol_node
+      when :string_node
         node.unescaped
-      when :hash_node
+      when :symbol_node
+        node.unescaped.to_sym
+      when :hash_node, :keyword_hash_node
         node.elements.each_with_object({}) do |element, hash|
+          if element.type == :assoc_splat_node
+            hash.merge(extract_value(element.value, string_interpolation_error: string_interpolation_error))
+            next
+          end
           key = extract_value(element.key, string_interpolation_error: string_interpolation_error)
           value = extract_value(element.value, string_interpolation_error: string_interpolation_error)
           hash[key] = value
         rescue ValueUnresolveable
           next
+        end
+      when :array_node
+        node.elements.map do |element|
+          extract_value(element, string_interpolation_error: string_interpolation_error)
         end
       when :interpolated_string_node
         node.parts.map do |part_node|
@@ -71,6 +81,8 @@ module VCR::UnusedCassettes
         resolve_variable(node.name)
       when :constant_read_node
         @context.dig(:constants, node.name)
+      when :assoc_splat_node
+        extract_value(node.value, string_interpolation_error: string_interpolation_error)
       else
         if node.respond_to?(:value) && !node.value.is_a?(Prism::Node)
           node.value
