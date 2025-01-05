@@ -42,16 +42,9 @@ module VCR::UnusedCassettes
     end
 
     def cassette_path_with_wildcard(name)
-      placeholder = "example_cassette"
-      full_path = path_for_cassette(placeholder)
-      name.downcase! if downcase_cassette_names?
-      full_path.sub(placeholder, name)
-    end
-
-    def downcase_cassette_names?
-      !!VCR.configuration
-        .default_cassette_options
-        .dig(:persister_options, :downcase_cassette_names)
+      placeholder = "a_placeholder_that_should_not_exist"
+      full_path = path_for_cassette(name.gsub("*", placeholder))
+      full_path.sub(placeholder, "*")
     end
 
     def persister
