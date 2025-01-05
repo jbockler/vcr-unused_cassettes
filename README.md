@@ -7,7 +7,7 @@ This gem provides a way to detect unused [VCR](https://github.com/vcr/vcr) casse
 
 This gem currently only is supposed to work with minitest, but rspec and cucumber support is planned.
 
-The interpretation of which cassettes are being used is pretty simple in the moment. Only string literals and some basic use of local variables is interpreted at the moment. If you do some more magic with the `VCR.use_cassette` calls, it is possible that you get false positives. 
+The interpretation of which cassettes are being used is pretty simple at the moment. Only string literals and some basic use of variables and constants is interpreted at the moment. If you do some more magic with the `VCR.use_cassette` calls, it is possible that you get false positives. If you encounter such a case, please open a pr or an issue with a code example.
 
 ## Installation
 
@@ -18,6 +18,8 @@ Install the gem and add to the application's Gemfile by executing:
 If bundler is not being used to manage dependencies, install the gem by executing:
 
     $ gem install vcr-unused_cassettes
+
+This gem require the VCR gem to be installed and configured in the same environment too. 
 
 Additionally you have to load the rake tasks in your application. Add the following line to your `Rakefile`:
 
@@ -42,12 +44,13 @@ This gem provides 2 tasks:
     $ rails vcr:unused_cassettes:remove
 
 ## Roadmap
-- add automated tests
+- automate manual tests into rspec tests
 - track constants that are used in the `VCR.use_cassette` calls
 - find usages of cassettes when test name is used
 - Add support for multiple cassette persisters in the same project
 - Add support for rspec and cucumber
 - create multiple run configurations to use e.g. minitest and cucumber in the same repo
+- fancy spinner with progress indicator (configurable for ci environments)
 
 ## Development
 
