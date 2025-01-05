@@ -4,7 +4,7 @@ require "prism"
 
 module VCR::UnusedCassettes
   class CassetteUsageFinder
-    attr_accessor :filename, :used_cassettes, :warnings
+    attr_accessor :filename, :used_cassettes, :warnings, :call_context
 
     CassetteNameError = Class.new(StandardError)
 
@@ -12,6 +12,7 @@ module VCR::UnusedCassettes
       self.filename = filename
       self.used_cassettes = []
       self.warnings = []
+      self.call_context = CallContext.new
     end
 
     def find_cassette_usages
@@ -25,6 +26,8 @@ module VCR::UnusedCassettes
 
     def find_cassette_usages_in(node)
       return if node.nil?
+
+      call_context.track(node)
 
       if node_contains_call?(node)
         found_name = find_cassette_name(node)
@@ -52,7 +55,6 @@ module VCR::UnusedCassettes
     def find_cassette_name(node)
       # cassette is the first argument of the use_cassette call
       cassette_argument = node.arguments.arguments.first
-      cassette_name = nil
       case cassette_argument
       when Prism::InterpolatedStringNode
         cassette_name = cassette_argument.parts.map do |part_node|
@@ -60,7 +62,16 @@ module VCR::UnusedCassettes
           when Prism::StringNode
             part_node.unescaped
           when Prism::EmbeddedStatementsNode
-            "*"
+            if part_node.statements.body.size != 1
+              "*"
+            else
+              statement = part_node.statements.body.first
+              if statement.type == :local_variable_read_node
+                call_context.resolve_variable_call(statement.name)&.to_s
+              else
+                "*"
+              end
+            end
           else
             raise CassetteNameError, "dont know how to handle interpolation part #{part_node.class}"
           end
@@ -68,6 +79,13 @@ module VCR::UnusedCassettes
       when Prism::StringNode
         # just a string literal
         cassette_name = cassette_argument.unescaped
+      when Prism::CallNode
+        unless cassette_argument.variable_call?
+          raise CassetteNameError, "expected variable call, got #{cassette_argument.type}"
+        end
+        variable_name = cassette_argument.name
+        cassette_name = call_context.resolve_variable_call(variable_name)&.to_s
+        raise CassetteNameError, "could not resolve variable #{variable_name}" if cassette_name.nil?
       else
         raise CassetteNameError, "dont know how to handle argument #{cassette_argument.class}"
       end
