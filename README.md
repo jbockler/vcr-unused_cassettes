@@ -50,6 +50,7 @@ Open for contributions. Some ideas what could be done in the future:
 - Add support for rspec and cucumber
 - create multiple run configurations to use e.g. minitest and cucumber in the same repo
 - fancy spinner with progress indicator (configurable for ci environments)
+- parallelize the analysis of the cassettes
 
 ## Contributing
 
