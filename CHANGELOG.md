@@ -1,5 +1,10 @@
 ## [Unreleased]
 
-## [0.1.0] - 2024-06-10
+## [1.0.0] - 2025-01-16
 
-- Initial release
+Initial release:
+- support for minitest
+- basic interpretation of variables and constants in the `VCR.use_cassette` call
+- support for multiple persisters and serializers
+- rake task to check for unused cassettes
+- rake tasks to remove unused cassettes
