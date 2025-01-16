@@ -1,4 +1,5 @@
 # Vcr::UnusedCassettes
+[![Gem Version](https://badge.fury.io/rb/vcr-unused_cassettes.svg)](https://badge.fury.io/rb/vcr-unused_cassettes)
 
 This gem provides a way to detect unused [VCR](https://github.com/vcr/vcr) cassettes. It is intended to be used in a test suite to ensure that all VCR cassettes are being used. You could run this in your CI pipeline to ensure that no cassettes are being left behind.
 
