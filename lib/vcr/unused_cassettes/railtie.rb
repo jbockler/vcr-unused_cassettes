@@ -1,5 +1,4 @@
 require "vcr/unused_cassettes"
-require "rails"
 
 module VCR
   module UnusedCassettes
