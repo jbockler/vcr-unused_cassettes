@@ -1,14 +1,19 @@
 require "vcr/unused_cassettes"
-require "rails"
 
 module VCR
   module UnusedCassettes
-    class Railtie < Rails::Railtie
-      railtie_name :vcr_unused_cassettes
+    if defined?(::Rails)
+      class Railtie < Rails::Railtie
+        railtie_name :vcr_unused_cassettes
 
-      rake_tasks do
-        path = File.expand_path(__dir__)
-        Dir.glob("#{path}/tasks/**/*.rake").each { |f| load f }
+        rake_tasks do
+          path = File.expand_path(__dir__)
+          Dir.glob("#{path}/tasks/**/*.rake").each { |f| load f }
+        end
+      end
+    else
+      # satisfy zeitwerk loading even when rails is not present
+      class Railtie
       end
     end
   end
