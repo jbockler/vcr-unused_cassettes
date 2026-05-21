@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+- Fix `NoMethodError` when emitting a warning for an unresolveable cassette name
+- Chore: Add tests
+
 ## [1.1.0] - 2025-03-03
 
 - Comply with zeitwerks eager loading

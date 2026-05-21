@@ -76,7 +76,7 @@ module VCR::UnusedCassettes
 
     def build_warning(node, error)
       Warning.new.tap do |warning|
-        warning.message = "Could not determine cassette name for #{filename}:#{node.line}"
+        warning.message = "Could not determine cassette name for #{filename}:#{node.location.start_line}"
         warning.details = error.message
         warning.backtrace = error.backtrace
       end
