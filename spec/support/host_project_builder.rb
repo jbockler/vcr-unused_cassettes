@@ -17,6 +17,11 @@ module HostProjectBuilder
       File.write(File.join(root, "test", filename), body)
     end
 
+    def add_spec(filename, body)
+      FileUtils.mkdir_p(File.join(root, "spec"))
+      File.write(File.join(root, "spec", filename), body)
+    end
+
     def add_cassette(filename, body = "---\nhttp_interactions: []\n")
       File.write(File.join(root, "test/vcr_cassettes", filename), body)
     end

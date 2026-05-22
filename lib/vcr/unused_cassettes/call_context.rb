@@ -131,7 +131,7 @@ module VCR::UnusedCassettes
           return true
         end
       when :call_node
-        if node.name == :test
+        if [:test, :it, :describe, :context].include?(node.name) && node.block.is_a?(Prism::BlockNode)
           return true
         end
       end

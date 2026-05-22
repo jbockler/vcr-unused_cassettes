@@ -6,7 +6,9 @@ This gem provides a way to detect unused [VCR](https://github.com/vcr/vcr) casse
 
 ## Pre-requisites
 
-This gem currently only is supposed to work with minitest, but rspec and cucumber support is planned.
+The gem auto-detects test files under `test/` (minitest) and `spec/` (rspec). Cucumber support is still planned.
+
+RSpec support is **experimental**: `describe`, `context`, and `it` are recognized as example boundaries, and instance variables assigned in `before` blocks resolve correctly. Cassette names defined via `let` / `let!` / `subject` are **not** resolved. Calls like `VCR.use_cassette(cassette_name)` where `cassette_name` is a `let` helper will emit a warning and may cause the gem to incorrectly report the matching cassette as unused. Workaround: use a string literal, an `@instance_variable` set in `before`, or a local variable inside the `it` block. Contributions of rspec examples (especially edge cases that aren't handled yet) are very welcome.
 
 The interpretation of which cassettes are being used is pretty simple at the moment. Only string literals and some basic use of variables and constants is interpreted at the moment. If you do some more magic with the `VCR.use_cassette` calls, it is possible that you get false positives. If you encounter such a case, please open a pr or an issue with a code example.
 
@@ -48,7 +50,8 @@ This gem provides 2 tasks:
 Open for contributions. Some ideas what could be done in the future:
 - automate manual tests into rspec tests
 - find usages of cassettes when test name is used
-- Add support for rspec and cucumber
+- full rspec support: resolve `let` / `let!` / `subject`
+- Add cucumber support
 - create multiple run configurations to use e.g. minitest and cucumber in the same repo
 - fancy spinner with progress indicator (configurable for ci environments)
 - parallelize the analysis of the cassettes

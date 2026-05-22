@@ -45,6 +45,25 @@ RSpec.describe VCR::UnusedCassettes::Runner do
       end
     end
 
+    it "auto-detects rspec test files under spec/" do
+      with_host_project do |project|
+        project.add_spec "foo_spec.rb", <<~RUBY
+          RSpec.describe "foo" do
+            it "uses a cassette" do
+              VCR.use_cassette("from_spec") { }
+            end
+          end
+        RUBY
+        project.add_cassette "from_spec.yml"
+        project.add_cassette "stray.yml"
+
+        unused, warnings = described_class.new.find_unused_cassettes
+
+        expect(unused.map { |path| File.basename(path) }).to match_array(["stray.yml"])
+        expect(warnings).to be_empty
+      end
+    end
+
     it "matches wildcard cassette patterns against existing files" do
       with_host_project do |project|
         project.add_test "foo_test.rb", <<~RUBY

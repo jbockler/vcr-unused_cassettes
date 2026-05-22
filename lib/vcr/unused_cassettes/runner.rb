@@ -18,7 +18,10 @@ module VCR::UnusedCassettes
       used_cassettes = []
       warnings = []
 
-      file_list = `grep -r -l "VCR.use_cassette" test/`.split("\n")
+      dirs = ["test", "spec"].select { |dir| Dir.exist?(dir) }
+      return [[], []] if dirs.empty?
+
+      file_list = `grep -r -l "VCR.use_cassette" #{dirs.join(" ")}`.split("\n")
       return [[], []] if file_list.empty? || $? != 0
 
       file_list.each do |file|
