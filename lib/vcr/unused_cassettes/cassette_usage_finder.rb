@@ -10,12 +10,14 @@ module VCR::UnusedCassettes
       self.filename = filename
       self.used_cassettes = []
       self.warnings = []
-      self.call_context = CallContext.new
     end
 
     def find_cassette_usages
       parse_result = Prism.parse_file(filename)
       return [[], []] unless parse_result
+
+      method_index = MethodIndex.new(parse_result.value)
+      self.call_context = CallContext.new(method_index: method_index)
 
       find_cassette_usages_in(parse_result.value)
 
@@ -28,20 +30,36 @@ module VCR::UnusedCassettes
       call_context.track(node)
 
       if node_contains_call?(node)
-        found_name = find_cassette_name(node)
-        if !found_name.nil? && /[a-zA-Z0-9]/.match?(found_name)
-          cassette_use = {pattern: found_name}
-          cassette_options = extract_options(node)
-          cassette_use[:persister] = cassette_options[:persist_with] if cassette_options&.has_key?(:persist_with)
-          cassette_use[:serializer] = cassette_options[:serialize_with] if cassette_options&.has_key?(:serialize_with)
-          used_cassettes << cassette_use
-        end
+        record_cassette_uses(node)
       end
 
       return if node.child_nodes.nil?
 
-      node.child_nodes.each do |child_node|
-        find_cassette_usages_in(child_node)
+      if node.is_a?(Prism::DefNode)
+        call_context.enter_method(node)
+        begin
+          node.child_nodes.each { |child| find_cassette_usages_in(child) }
+        ensure
+          call_context.exit_method
+        end
+      else
+        node.child_nodes.each { |child| find_cassette_usages_in(child) }
+      end
+    end
+
+    def record_cassette_uses(node)
+      found_name = find_cassette_name(node)
+      return if found_name.nil?
+
+      cassette_options = extract_options(node)
+      patterns = found_name.is_a?(CallContext::MultiValue) ? found_name.values : [found_name]
+
+      patterns.each do |pattern|
+        next unless pattern.is_a?(String) && /[a-zA-Z0-9*]/.match?(pattern)
+        cassette_use = {pattern: pattern}
+        cassette_use[:persister] = cassette_options[:persist_with] if cassette_options&.has_key?(:persist_with)
+        cassette_use[:serializer] = cassette_options[:serialize_with] if cassette_options&.has_key?(:serialize_with)
+        used_cassettes << cassette_use
       end
     end
 
